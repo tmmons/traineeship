@@ -1,0 +1,7 @@
+D:\documents\search4solutions\plotter\plotter\bin\Debug\plotter.exe.config
+D:\documents\search4solutions\plotter\plotter\bin\Debug\plotter.exe
+D:\documents\search4solutions\plotter\plotter\bin\Debug\plotter.pdb
+D:\documents\search4solutions\plotter\plotter\obj\Debug\plotter.csprojAssemblyReference.cache
+D:\documents\search4solutions\plotter\plotter\obj\Debug\plotter.csproj.CoreCompileInputs.cache
+D:\documents\search4solutions\plotter\plotter\obj\Debug\plotter.exe
+D:\documents\search4solutions\plotter\plotter\obj\Debug\plotter.pdb
