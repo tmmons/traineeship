@@ -18,8 +18,8 @@ def nearest_cluster(coords):
     return closest
 
 #remove all entries with empty properties
+mask=[]
 for prop in properties:
-    mask=[]
     mask=data[np.all([mask, type(i)!=str for i in data[prop]],axis=0)]
 used_data=data[mask]
 
