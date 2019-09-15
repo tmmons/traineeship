@@ -33,7 +33,7 @@ for i in range(n_clusters):
     cluster.append(np.random.rand(len(properties)))
 
 member_of=np.zeros(len(used_data))
-for i in range(iterations):
+for j in range(iterations):
     #calculate nearest cluster center for eacht datapoint
     for i in range(len(used_data)):
         member_of[i]=nearest_cluster(used_data[i])
@@ -41,3 +41,6 @@ for i in range(iterations):
     #calculate new cluster centers
     for i in range(n_clusters):
         cluster[i]=np.sum(used_data[member_of==i])/len(used_data[member_of==i])
+
+for i in range(len(used_data)):
+    SQL_commmand="UPDATE exoplanets_data SET cluster="+str(member_of[i])+" WHERE entryID="+ str(used_data[0][i]+";")
