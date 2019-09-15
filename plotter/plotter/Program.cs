@@ -27,7 +27,7 @@ namespace plotter
                 answer = Console.ReadLine();
                 if (answer == "yes" || answer == "Yes")
                 {
-                    string SQL_query = "SELECT " + property1 + ", " + property2 + ", clusters FROM";
+                    string SQL_query = "SELECT " + property1 + ", " + property2 + ", clusters WHERE IsNumeric("+property1+")=1 AND IsNumeric("+property2")=1 FROM exoplanets";
                     double[,] values = new double[nclusters, 10000];
 
                     for (int i = 0; i < data.Length(); i++)
@@ -37,7 +37,7 @@ namespace plotter
                 }
                 else
                 {
-                    string SQL_query = "SELECT " + property1 + ", " + property2 + " FROM";
+                    string SQL_query = "SELECT " + property1 + ", " + property2 + WHERE IsNumeric("+property1+") = 1 AND IsNumeric("+property2")= 1 " FROM exoplanets";
 
                     values = new ChartValues<ObservablePoint>();
 
