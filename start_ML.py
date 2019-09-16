@@ -17,7 +17,7 @@ def nearest_cluster(coords):
 
     return closest
 
-#remove all entries with empty properties
+#remove all entries with empty properties Might be unneccesary due to doing this in SQL_commmands
 mask=[]
 for prop in properties:
     mask=data[np.all([mask, type(i)!=str for i in data[prop]],axis=0)]
@@ -43,4 +43,4 @@ for j in range(iterations):
         cluster[i]=np.sum(used_data[member_of==i])/len(used_data[member_of==i])
 
 for i in range(len(used_data)):
-    SQL_commmand="UPDATE exoplanets_data SET cluster="+str(member_of[i])+" WHERE entryID="+ str(used_data[0][i]+";")
+    SQL_commmand="UPDATE exoplanets_data SET cluster="+str(member_of[i])+" WHERE entryID="+ str(used_data[0][i])+";"
