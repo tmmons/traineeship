@@ -1,11 +1,17 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as pyplot
+import pymssql
 
 n_clusters=10
 iterations=100
 
 properties = ['a','b','c','d','e']
+server_name="DESKTOP-9G5VRPU\\SQLEXPRESS"
+database_name="exoplanets"
+table_name="dbo.exoplanets_data"
+
+
 
 # a function calculating the nearest cluster
 def nearest_cluster(coords):
@@ -17,12 +23,20 @@ def nearest_cluster(coords):
 
     return closest
 
-#remove all entries with empty properties Might be unneccesary due to doing this in SQL_commmands
-mask=[]
-for prop in properties:
-    mask=data[np.all([mask, type(i)!=str for i in data[prop]],axis=0)]
-used_data=data[mask]
+#establish sql connection and fetch data
+conn = pymssql.connect('Driver={SQL Server};'
+                      'Server=server_name;'
+                      'Database=db_name;'
+                      'Trusted_Connection=yes;')
+prop_string=properties[0]
+for prop in properties[1:]:
+    prop_string=prop_string+', ' + property
+isnumeric_string="IsNumeric("+properties[0]+')=1 '
+for prop in properties[1:]:
+    isnumeric_string=isnumeric_string+'AND IsNumeric('+prop+ ')=1 '
 
+cursor = conn.cursor()
+cursor.execute("SELECT rowid, " + prop_string + ", clusters WHERE"+ isnumeric_string +"FROM exoplanets;")
 #rescale everything into a number between 0 and 1
 for i in range(len(properties)):
     used_data[i]=(used_data[i]-np.min(used_data[i]))/(np.max(used_data[i])-np.min(used_data[i]))
@@ -44,3 +58,6 @@ for j in range(iterations):
 
 for i in range(len(used_data)):
     SQL_commmand="UPDATE exoplanets_data SET cluster="+str(member_of[i])+" WHERE entryID="+ str(used_data[0][i])+";"
+    cursor = conn.cursor()
+    cursor.execute(SQL_commmand)
+conn.close()
