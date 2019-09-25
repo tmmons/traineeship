@@ -7,7 +7,7 @@ n_clusters=10
 iterations=100
 
 properties = ['a','b','c','d','e']
-server_name="DESKTOP-9G5VRPU\\SQLEXPRESS"
+server_name="DESKTOP-AFP1I0T\\SQLEXPRESS"
 database_name="exoplanets"
 table_name="dbo.exoplanets_data"
 
@@ -25,8 +25,8 @@ def nearest_cluster(coords):
 
 #establish sql connection and fetch data
 conn = pymssql.connect('Driver={SQL Server};'
-                      'Server=server_name;'
-                      'Database=db_name;'
+                      'Server=DESKTOP-AFP1I0T\\SQLEXPRESS;'
+                      'Database=exoplanets;'
                       'Trusted_Connection=yes;')
 prop_string=properties[0]
 for prop in properties[1:]:
