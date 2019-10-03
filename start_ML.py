@@ -1,13 +1,13 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as pyplot
-import pymssql
+import pyodbc
 
 n_clusters=10
 iterations=100
 
 properties = ['a','b','c','d','e']
-server_name="DESKTOP-AFP1I0T\\SQLEXPRESS"
+server_name="DESKTOP-9G5VRPU\\SQLEXPRESS01"
 database_name="exoplanets"
 table_name="dbo.exoplanets_data"
 
@@ -24,9 +24,9 @@ def nearest_cluster(coords):
     return closest
 
 #establish sql connection and fetch data
-conn = pymssql.connect('Driver={SQL Server};'
-                      'Server=DESKTOP-AFP1I0T\\SQLEXPRESS;'
-                      'Database=exoplanets;'
+conn = pyodbc.connect('Driver={SQL Server};'
+                      'Server=server_name;'
+                      'Database=db_name;'
                       'Trusted_Connection=yes;')
 prop_string=properties[0]
 for prop in properties[1:]:
