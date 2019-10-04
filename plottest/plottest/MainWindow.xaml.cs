@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Data.SqlClient;
+using System.IO;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,11 +20,12 @@ namespace Wpf.CartesianChart.ScatterPlot
     public partial class ScatterExample : UserControl
     {
         int nclusters = 10;
-        
-        const string connectionstring = "Data Source= DESKTOP-AFP1I0T\\SQLEXPRESS; Initial Catalog=exoplanets";
+        const string connectionstring = "Server=localhost\\SQLEXPRESS01;Database=exoplanets; Trusted_Connection=True;";
+
+        //const string connectionstring = "Data Source= DESKTOP-AFP1I0T\\SQLEXPRESS; Initial Catalog=exoplanets";
         SqlConnection cnn = new SqlConnection(connectionstring);
-        private string property1 = "radial velocity e.g.";
-        private string property2 = "radius e.g.";
+        private string property1 = "fst_mass";
+        private string property2 = "fpl_eccen";
 
         public string prop1
         {
@@ -32,27 +37,85 @@ namespace Wpf.CartesianChart.ScatterPlot
             get { return property2; }
             set { property2 = value; }
         }
-
+        
 
         public ScatterExample()
         {
-            InitializeComponent();
-            string SQL_query = "SELECT " + property1 + ", " + property2 + ", clusters WHERE IsNumeric(" + property1 + ")=1 AND IsNumeric(" + property2 + ")=1 FROM exoplanets";
-            SqlCommand command = new SqlCommand(SQL_query, cnn);
-            SqlDataReader reader;
-            reader = command.ExecuteReader();
+            SqlDataReader dataReader;
             List<double> data_ID = new List<double>();
             List<double> data_1 = new List<double>();
             List<double> data_2 = new List<double>();
             List<double> data_cluster = new List<double>();
-            while (reader.Read())
+            ProcessStartInfo psi = new ProcessStartInfo();
+            psi.FileName = "C:\\Program Files\\WindowsApps\\python3\\python.exe";
+            string script = @"D:\\documents\\search4solutions\\programtest\\clustering.py";
+            string input_var = "fpl_orbperfpl_smaxfpl_eccenfpl_bmassefpl_radefpl_eqtfst_tefffst_massfst_massfst_rad05";
+            psi.Arguments = $"\"{script}\" \"{input_var}\"";
+            psi.UseShellExecute = false;
+            psi.CreateNoWindow = true;
+            psi.RedirectStandardOutput = true;
+            psi.RedirectStandardError = true;
+            using (Process process = Process.Start(psi))
             {
-                data_ID.Add((double) reader.GetValue(0));
-                data_1.Add((double) reader.GetValue(1));
-                data_2.Add((double) reader.GetValue(2));
-                data_cluster.Add((double) reader.GetValue(3));
+                using (StreamReader reader = process.StandardOutput)
+                {
+                    string stderr = process.StandardError.ReadToEnd();
+                    string result = reader.ReadToEnd();
+                    if (string.IsNullOrEmpty(stderr)==false) { MessageBox.Show(stderr); }
+                }
             }
-            
+            List<string> rowid = new List<string>();
+            List<string> cluster = new List<string>();
+            using (var reader = new StreamReader(@"D:\\documents\\search4solutions\\programtest\\cluster.csv"))
+            {
+                
+                while (!reader.EndOfStream)
+                {
+                    var line = reader.ReadLine();
+                    var values = line.Split(',');
+
+                    rowid.Add(values[0]);
+                    cluster.Add(values[1]);
+                }
+            }
+
+
+
+            using (cnn)
+            {
+                InitializeComponent();
+                string SQL_query = "SELECT rowid," + property1 + ", " + property2 + ", clusters FROM exoplanets_data WHERE IsNumeric(" + property1 + ")=1 AND IsNumeric(" + property2 + ")=1 ;";
+                //string SQL_query = "select rowid from exoplanets_data;";
+                SqlCommand command = new SqlCommand(SQL_query, cnn);
+                cnn.Open();
+                dataReader = command.ExecuteReader();
+                string Output = "a";
+                double number = 0.0;
+                int counter = 0;
+
+                while (dataReader.Read())
+                {
+                    Output = String.Format("{0}", dataReader.GetString(0));
+                    number = Convert.ToDouble(Output);
+                    data_ID.Add(number);
+                    if (rowid.Contains(Output))
+                    {
+                        Output = String.Format("{0}", dataReader.GetString(1));
+                        number = Convert.ToDouble(Output);
+                        data_1.Add(number);
+                        Output = String.Format("{0}", dataReader.GetString(2));
+                        number = Convert.ToDouble(Output);
+                        data_2.Add(number);
+                        data_cluster.Add(Convert.ToInt32(cluster[counter]));
+                        counter++;
+                    }
+                    
+                    //Output = String.Format("{0}", dataReader.GetString(3));
+                    //number = Convert.ToDouble(Output);
+                    
+                }
+
+            }
             ValuesA = new ChartValues<ObservablePoint>();
             ValuesB = new ChartValues<ObservablePoint>();
             ValuesC = new ChartValues<ObservablePoint>();
@@ -63,8 +126,9 @@ namespace Wpf.CartesianChart.ScatterPlot
             ValuesH = new ChartValues<ObservablePoint>();
             ValuesI = new ChartValues<ObservablePoint>();
             ValuesJ = new ChartValues<ObservablePoint>();
-
-            for (var i = 0; i < data_ID.Count; i++)
+            Values_earth = new ChartValues<ObservablePoint>();
+            
+            for (var i = 0; i < data_1.Count; i++)
             {
                 if (data_cluster[i] == 0) { ValuesA.Add(new ObservablePoint(data_1[i], data_2[i])); }
                 else if (data_cluster[i] == 1) { ValuesB.Add(new ObservablePoint(data_1[i], data_2[i])); }
@@ -91,5 +155,6 @@ namespace Wpf.CartesianChart.ScatterPlot
         public ChartValues<ObservablePoint> ValuesH { get; set; }
         public ChartValues<ObservablePoint> ValuesI { get; set; }
         public ChartValues<ObservablePoint> ValuesJ { get; set; }
+        public ChartValues<ObservablePoint> Values_earth { get; set; }
     }
 }

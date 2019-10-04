@@ -15,14 +15,27 @@
         <!--Button Grid.Row="0" Margin="10" Click="RandomizeOnClick">Randomize</-->
         <lvc:CartesianChart Grid.Row="1" LegendLocation="Bottom">
             <lvc:CartesianChart.Series>
-                <lvc:ScatterSeries Title="{Binding Path=prop1}" Values="{Binding ValuesA}" />
-                <lvc:ScatterSeries Title="{Binding Path=prop2}" Values="{Binding ValuesB}"
+                <lvc:ScatterSeries Title="Cluster 1" Values="{Binding ValuesA}" />
+                <lvc:ScatterSeries Title="Cluster 2" Values="{Binding ValuesB}"
                                        PointGeometry="{x:Static lvc:DefaultGeometries.Diamond}" />
+                <lvc:ScatterSeries Title="Cluster 3" Values="{Binding ValuesC}"/>
+                <lvc:ScatterSeries Title="Cluster 4" Values="{Binding ValuesD}"/>
+                <lvc:ScatterSeries Title="Cluster 5" Values="{Binding ValuesE}"/>
+                <lvc:ScatterSeries Title="Cluster 6" Values="{Binding ValuesF}"/>
+                <lvc:ScatterSeries Title="Cluster 7" Values="{Binding ValuesG}"/>
+                <lvc:ScatterSeries Title="Cluster 8" Values="{Binding ValuesH}"/>
+                <lvc:ScatterSeries Title="Cluster 9" Values="{Binding ValuesI}"/>
+                <lvc:ScatterSeries Title="Cluster 10" Values="{Binding ValuesJ}"/>
+                <lvc:ScatterSeries Title="Earth" Values="{Values_earth}"/>
+                
                 
             </lvc:CartesianChart.Series>
+            <lvc:CartesianChart.AxisX>
+                <lvc:Axis Title="{Binding Path=prop1}"></lvc:Axis>
+            </lvc:CartesianChart.AxisX>
             <lvc:CartesianChart.AxisY>
                 <!--setting the axis unit improved the labels rounding rule-->
-                <lvc:Axis Unit="1"></lvc:Axis>
+                <lvc:Axis Title="{Binding Path=prop2}" Unit="1"></lvc:Axis>
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
     </Grid>
