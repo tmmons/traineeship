@@ -2,8 +2,22 @@ pipeline {
   agent any
   stages {
     stage('Build') {
-      steps {
-        echo 'Building'
+      parallel {
+        stage('Build') {
+          steps {
+            echo 'Building'
+          }
+        }
+
+        stage('') {
+          steps {
+            sh '''ls >> test_file;  cat test_file
+
+
+'''
+          }
+        }
+
       }
     }
 
@@ -14,8 +28,19 @@ pipeline {
     }
 
     stage('Deploy') {
-      steps {
-        echo 'Deploying'
+      parallel {
+        stage('Deploy') {
+          steps {
+            echo 'Deploying'
+          }
+        }
+
+        stage('') {
+          steps {
+            echo 'Hi, i\'m a second deploy branch'
+          }
+        }
+
       }
     }
 
